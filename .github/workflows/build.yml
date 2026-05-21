@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  VERSION: 1.4.350.0
+
+jobs:
+  build:
+    name: "${{ matrix.platform }} (${{ matrix.os.arch }})"
+    runs-on: ${{ matrix.os.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - runs-on: windows-latest
+            arch: amd64
+          - runs-on: windows-11-arm
+            arch: arm64
+        platform: [windows]
+
+    env:
+      ARCH: ${{ matrix.os.arch }}
+      PLATFORM: ${{ matrix.platform }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup MSVC
+        uses: Eden-CI/msvc-dev-cmd@master
+        with:
+          arch: ${{ matrix.os.arch }}
+
+      - name: Headers
+        shell: bash
+        run: ./headers.sh
+
+      - name: Loader
+        shell: bash
+        run: ./loader.sh
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          archive: false
+          name: windows-${{ matrix.os.arch }}
+          path: install/*
+
+  release:
+    needs: [build]
+    runs-on: ubuntu-slim
+    steps:
+      - name: Download
+        uses: actions/download-artifact@v8
+
+      - name: Release
+        uses: softprops/action-gh-release@v3
+        with:
+          name: Vulkan for Windows ${{ env.VERSION }}
+          tag_name: v${{ env.VERSION }}
+          files: windows-*/*
+          make_latest: true
