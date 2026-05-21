@@ -48,8 +48,9 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7
         with:
+          archive: false
           name: windows-${{ matrix.os.arch }}
-          path: install/*
+          path: install/*.tar.gz
 
   release:
     needs: [build]
@@ -63,5 +64,5 @@ jobs:
         with:
           name: Vulkan for Windows ${{ env.VERSION }}
           tag_name: v${{ env.VERSION }}
-          files: windows-*/*
+          files: ./*.tar.gz
           make_latest: true

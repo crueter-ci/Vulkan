@@ -10,15 +10,13 @@ artifact="loader-$tag.tar.gz"
 url="https://github.com/$repo/archive/$tag.tar.gz"
 
 [ -f "$artifact" ] || curl -sfL "$url" -o "$artifact"
-if [ ! -d "$dir" ]; then
-	tar xf "$artifact"
-	sed -i '56,58d' "$dir"/CMakeLists.txt
-fi
-
-cat "$PWD/install/share/cmake/VulkanHeaders"/*
+[ -d "$dir" ] || tar xf "$artifact"
 
 rm -rf build
 cmake -S "$dir" -B build -GNinja -DCMAKE_BUILD_TYPE=Release \
 	-DVulkanHeaders_DIR="$PWD/install/share/cmake/VulkanHeaders"
 cmake --build build
 cmake --install build --prefix install
+
+cd install
+tar czf "vulkan-$ARCH.tar.gz" ./*
