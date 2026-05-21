@@ -17,6 +17,3 @@ cmake -S "$dir" -B build -GNinja -DCMAKE_BUILD_TYPE=Release \
 	-DVulkanHeaders_DIR="$PWD/install/share/cmake/VulkanHeaders"
 cmake --build build
 cmake --install build --prefix install
-
-cd install
-tar czf "vulkan-$ARCH.tar.gz" ./*

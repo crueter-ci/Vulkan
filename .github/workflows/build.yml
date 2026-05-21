@@ -45,6 +45,12 @@ jobs:
         shell: bash
         run: ./loader.sh
 
+      - name: Pack
+        shell: bash
+        run: |
+          cd install
+          tar czf "vulkan-${{ matrix.os.arch }}.tar.gz" ./*
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7
         with:

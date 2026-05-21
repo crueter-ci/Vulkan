@@ -16,6 +16,3 @@ rm -rf build
 cmake -S "$dir" -B build -GNinja -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 cmake --install build --prefix install
-
-cd install
-tar czf "vulkan-$ARCH.tar.gz" ./*
