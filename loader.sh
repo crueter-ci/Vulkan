@@ -10,7 +10,10 @@ artifact="loader-$tag.tar.gz"
 url="https://github.com/$repo/archive/$tag.tar.gz"
 
 [ -f "$artifact" ] || curl -sfL "$url" -o "$artifact"
-[ -d "$dir" ] || tar xf "$artifact"
+if [ ! -d "$dir" ]; then
+	tar xf "$artifact"
+	sed -i '56,58d' "$dir"/CMakeLists.txt
+fi
 
 rm -rf build
 cmake -S "$dir" -B build -GNinja -DCMAKE_BUILD_TYPE=Release \
