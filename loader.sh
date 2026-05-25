@@ -14,6 +14,7 @@ url="https://github.com/$repo/archive/$tag.tar.gz"
 
 rm -rf build
 cmake -S "$dir" -B build -GNinja -DCMAKE_BUILD_TYPE=Release \
-	-DVulkanHeaders_DIR="$PWD/install/share/cmake/VulkanHeaders"
+	-DVulkanHeaders_DIR="$PWD/install/share/cmake/VulkanHeaders" \
+	-DCMAKE_INSTALL_PREFIX="C:/hostedtoolcache/windows/vulkan"
 cmake --build build
 cmake --install build --prefix install
